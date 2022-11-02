@@ -1,6 +1,6 @@
 # Building Carla in a Docker
 
-_These instructions have been tested in **Ubuntu 16.04**._
+_These instructions have been tested in **Ubuntu 18.04**._
 
 This file is intended to explain how to build a Docker image that uses **Ubuntu 18.04** to compile Carla.
 
@@ -12,7 +12,7 @@ Since this building process is based on [**ue4-docker**](https://github.com/adam
 
 More information about large containers can be found [here](https://adamrehn.com/docs/ue4-docker/read-these-first/large-container-images-primer).
 
-**The Docker images produced by the ue4-docker Python package contain the UE4 Engine Tools in both source code and object code form. As per Section 1A of the [Unreal Engine EULA](https://www.unrealengine.com/en-US/eula), Engine Licensees are prohibited from public distribution of the Engine Tools unless such distribution takes place via the Unreal Marketplace or a fork of the Epic Games UE4 GitHub repository. Public distribution of the built images via an openly accessible Docker Registry (e.g. Docker Hub) is a direct violation of the license terms. It is your responsibility to ensure that any private distribution to other Engine Licensees (such as via an organization's internal Docker Registry) complies with the terms of the Unreal Engine EULA.**  
+**The Docker images produced by the ue4-docker Python package contain the UE4 Engine Tools in both source code and object code form. As per Section 1A of the [Unreal Engine EULA](https://www.unrealengine.com/en-US/eula), Engine Licensees are prohibited from public distribution of the Engine Tools unless such distribution takes place via the Unreal Marketplace or a fork of the Epic Games UE4 GitHub repository. Public distribution of the built images via an openly accessible Docker Registry (e.g. Docker Hub) is a direct violation of the license terms. It is your responsibility to ensure that any private distribution to other Engine Licensees (such as via an organization's internal Docker Registry) complies with the terms of the Unreal Engine EULA.**
 
 For more details, see the [Unreal Engine EULA Restrictions](https://unrealcontainers.com/docs/obtaining-images/eula-restrictions) page on the [Unreal Containers community hub](https://unrealcontainers.com/).
 
@@ -34,7 +34,7 @@ Make sure you have installed **Python 3.6 or newer**, check that is in the path,
 
 ## Dependencies
 
-As mentioned before, in order to use Unreal Engine inside Docker we use [ue4-docker](https://github.com/adamrehn/ue4-docker). You can install it using `pip3`.  
+As mentioned before, in order to use Unreal Engine inside Docker we use [ue4-docker](https://github.com/adamrehn/ue4-docker). You can install it using `pip3`.
 Further information on installing ue4-docker on Linux can be found [here](https://adamrehn.com/docs/ue4-docker/configuration/configuring-linux).
 
 ```
@@ -49,19 +49,26 @@ ue4-docker setup
 
 ## Building the Docker images
 
-Navigate to `carla/Util/Docker` and use the following commands, each one will take a long time.  
-First, let's create a Docker image containing a compiled version of Unreal Engine 4 version `24.3`. Change the version if needed.
+Navigate to `carla/Util/Docker` and use the following commands, each one will take a long time.
+
+### Image 1 - Unreal Engine 4
+First, let's create a Docker image containing a compiled version of Unreal Engine 4 version using the Carla forked repository and branch. Change the branch if needed.
+
+This will by default ask for the user Git credentials. You can also use -username my_user -password my_password
+Be aware that your password won't work has GitHub does not allow that for security reasons. Therefore, you should use a GitHub Authentification token with repository access. Cf: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 
 ```
-ue4-docker build 4.24.3 --no-engine --no-minimal
+ue4-docker build --linux --target=source custom -repo=https://github.com/CarlaUnreal/UnrealEngine.git -branch=carla
 ```
 
+### Image 2 - Prerequisites to build Carla
 Next, this will build the image with all the necessary requisites to build Carla in a **Ubuntu 18.04**
 
 ```
 docker build -t carla-prerequisites -f Prerequisites.Dockerfile .
 ```
 
+### Image 3 - Carla
 Finally create the actual Carla image, it will search for `carla-prerequisites:latest`:
 
 ```
@@ -86,7 +93,7 @@ ue4-docker clean
 
 ## Using the Docker tools
 
-The `docker_tools.py` (in `/carla/Util/Docker`) is an example of how you can take advantages of these Docker images. It uses [docker-py](https://github.com/docker/docker-py) whose documentation can be found [here](https://docker-py.readthedocs.io/en/stable/).  
+The `docker_tools.py` (in `/carla/Util/Docker`) is an example of how you can take advantages of these Docker images. It uses [docker-py](https://github.com/docker/docker-py) whose documentation can be found [here](https://docker-py.readthedocs.io/en/stable/).
 The code is really simple and can be easily expanded to interact with docker in other ways.
 
 You can create a Carla package (distribution) from the Docker image using:
