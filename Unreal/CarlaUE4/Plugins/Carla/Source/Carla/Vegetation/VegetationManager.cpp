@@ -617,7 +617,8 @@ void AVegetationManager::DestroySkeletalFoliages()
   TRACE_CPUPROFILER_EVENT_SCOPE(AVegetationManager::DestroySkeletalFoliages);
   const FTransform HeroTransform = HeroVehicle->GetActorTransform();
   const FVector HeroLocation = HeroTransform.GetLocation();
-  const float HeroDetectionSizeSquared = HeroVehicle->GetDetectionSize() * HeroVehicle->GetDetectionSize();
+  const float HideDistance = HeroVehicle->GetDetectionSize();
+  const float HeroDetectionSizeSquared = HideDistance * HideDistance;
 
   for (TPair<FString, TArray<FPooledActor>>& Element : ActorPool)
   {
@@ -648,11 +649,7 @@ bool AVegetationManager::EnableActorFromPool(
     if (PooledActor.InUse)
       continue;
     PooledActor.EnableActor(Transform, Index, TileMeshComponent);
-    PooledActor.Actor->SetActorLocationAndRotation(Transform.GetLocation(), Transform.Rotator(), true, nullptr, ETeleportType::ResetPhysics);
-    if (SpawnScale <= 1.01f && SpawnScale >= 0.99f)
-      PooledActor.Actor->SetActorScale3D(Transform.GetScale3D());
-    else
-      PooledActor.Actor->SetActorScale3D({SpawnScale, SpawnScale, SpawnScale});
+    PooledActor.Actor->SetActorTransform(Transform, true, nullptr, ETeleportType::ResetPhysics);
     return true;
   }
   return false;

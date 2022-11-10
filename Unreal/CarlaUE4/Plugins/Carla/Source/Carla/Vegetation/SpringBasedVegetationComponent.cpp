@@ -351,6 +351,7 @@ void USpringBasedVegetationComponent::ResetComponent()
 {
   Skeleton.ClearExternalForces();
   SkeletalMesh->ResetAllBodiesSimulatePhysics();
+  SkeletalMesh->ResetAnimInstanceDynamics();
 }
 
 void USpringBasedVegetationComponent::GenerateCollisionCapsules()
