@@ -216,9 +216,9 @@ public class Carla : ModuleRules
         AddDynamicLibrary(Path.Combine(LibCarlaInstallPath, "lib", "libChronoModels_vehicle.so"));
         AddDynamicLibrary(Path.Combine(LibCarlaInstallPath, "lib", "libChronoModels_robot.so"));
         bUseRTTI = true;
-        bEnableExceptions = true;
       }
     }
+    bEnableExceptions = true;
 
     // Include path.
     string LibCarlaIncludePath = Path.Combine(LibCarlaInstallPath, "include");
