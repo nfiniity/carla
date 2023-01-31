@@ -58,7 +58,7 @@ This will by default ask for the user Git credentials. You can also use -usernam
 Be aware that your password won't work has GitHub does not allow that for security reasons. Therefore, you should use a GitHub Authentification token with repository access. Cf: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 
 ```
-ue4-docker build --linux --target=source custom -repo=https://github.com/CarlaUnreal/UnrealEngine.git -branch=carla
+ue4-docker build --linux --cuda=11.4.2 custom -repo=https://github.com/CarlaUnreal/UnrealEngine.git -branch=carla
 ```
 
 ### Image 2 - Prerequisites to build Carla
@@ -72,12 +72,20 @@ docker build -t carla-prerequisites -f Prerequisites.Dockerfile .
 Finally create the actual Carla image, it will search for `carla-prerequisites:latest`:
 
 ```
-docker build -t carla -f Carla.Dockerfile .
+docker build -t carla -f Carla.Dockerfile --build-arg GIT_REPO=https://github.com/nfiniity/carla.git --build-arg GIT_BRANCH=0.9.13-fix .
 ```
 
 ---
 
 ## Other useful information
+
+To run the editor in the container, you can use:
+
+```bash
+docker run -ti --rm -v /tmp/.X11-unix:/tmp/.X11-unix:rw -v /run/user/$UID/pulse:/run/user/1000/pulse:rw -e DISPLAY --gpus=all carla:latest
+
+make launch
+```
 
 You can use a specific **repository** and a  **branch** or **tag** from our repository, using:
 
@@ -99,12 +107,14 @@ The code is really simple and can be easily expanded to interact with docker in 
 You can create a Carla package (distribution) from the Docker image using:
 
 ```
+# Use full path to the output folder
 ./docker_tools.py --output /output/path
 ```
 
 Or you can use it to cook assets (like new maps and meshes), ready to be consumed by a Carla package (distribution):
 
 ```
+# Use full path to the input and output folders
 ./docker_tools.py --input /assets/to/import/path --output /output/path --packages PkgeName1,PkgeName2
 ```
 
