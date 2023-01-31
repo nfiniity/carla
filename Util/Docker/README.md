@@ -108,6 +108,7 @@ You can create a Carla package (distribution) from the Docker image using:
 
 ```
 # Use full path to the output folder
+
 ./docker_tools.py --output /output/path
 ```
 
@@ -115,7 +116,12 @@ Or you can use it to cook assets (like new maps and meshes), ready to be consume
 
 ```
 # Use full path to the input and output folders
+
 ./docker_tools.py --input /assets/to/import/path --output /output/path --packages PkgeName1,PkgeName2
 ```
 
-The needed files and hierarchy to import assets is explained [here](https://carla.readthedocs.io/en/latest/export_import_dist/).
+To prepare map assets for packaging, follow [this guide](https://carla.readthedocs.io/en/latest/tuto_M_manual_map_package/) (JSON file is optional).
+
+To prepare props assets for packaging, follow [this guide](https://carla.readthedocs.io/en/latest/tuto_A_add_props/) (JSON file is mandatory).
+
+The process of importing assets into a CARLA package is explained [here](https://carla.readthedocs.io/en/latest/tuto_A_create_standalone/#import-assets-into-a-carla-package).
